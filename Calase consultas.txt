@@ -1,0 +1,42 @@
+Proximas clases
+
+Miervoles  10:00 jueves  12:00
+
+301
+
+____________________________________________________________________________________________
+
+
+Identificar robustes xon la funcion escalarizada y ver que el valor  sube  
+
+Cambiar los pesos pq  tenerlos 
+
+70 30  me muestra 1  parte  de pareto
+
+Tengo que hacerlo  muchas veces  en diferentes  pesos 
+
+La escalera que cambia el valor esta bien 
+Eso es robustes 
+
+1000 iteraciones  esta bien 
+
+30 simulaciones   es valido por el teorema fundamental del calculo
+
+30 por peso diferente
+
+Los 30 g del mismo peso hago un diagrama d e  caja bigote, guardar los valores  en un csv
+
+Subfigure para el latex
+
+Ese fitnes de 2867 esas variables  tiene  que funcionar en min y max
+
+Al final los valores no de truncan  de pasan a  la  sigmoide  y  se tiene que pasar cn el.siguiente  caso
+
+Si x1 es del 3 al 9 
+
+La sigmoide  se divide en 7  y ahi la sigmoide me dara un valor truncado
+
+
+
+alargo la sigmoide en el eje x desde y hasta los valores del dominio
+

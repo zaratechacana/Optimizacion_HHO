@@ -1,0 +1,77 @@
+Link del paper con los codigos utilizados
+https://aliasgharheidari.com/HHO.html
+
+Link seleccion del modelo a utilizar 
+https://docs.google.com/spreadsheets/d/1Fw0t-5wX28wFKw2XXTUafJfsMUWEoo5BJ__nSMBO6EQ/edit?gid=0#gid=0
+
+
+
+funcion libay  weas de la naturaleza que buelan, factor de decaimiento 
+
+u el alpha y el berta lo tengo 
+valores uniformes entre 0 y 1
+
+
+
+
+X halcon posicion aleatoria en el tiempo t 
+- los valores randomicos
+
+
+
+UB = VALORES MAXIMOS DEL DOMINIO
+	DE SOLO 1 VARIABLE DE DECICION 
+LB = VALORES MINIMOS DEL DOMINIO
+	DE SOLO 1 VARIABLE DE DESICION
+
+UPPER BAND Y LOWER BAND
+
+
+
+USAR EL CODIGO DE AC3 QUE APSO EL PROFE
+
+
+*SON 5 VARIABLES DE DESICION*
+
+
+
+
+CADA halcon ES MI VARIABLE DE DESICION 
+
+
+X_m es l poblacion promedio de halcon actuales
+
+fitness, el valor que me da intercambiando los valores en al funcion objetivo
+
+pasar de exploacion a explotacion 
+
+t iteracion en al que voy /  T en mi max iter
+
+e_0 es un estado inicial de energia
+
+0 -1 el conejo esta cansado y entre 0 y 1 el wn tiene fuerza
+
+E tiene un decresiiento que dura en las iteraciones
+
+|E| > 1 al halcon busca otra region 
+
+|E| <=
+
+ver lo de asedio suabe y siumple
+
+
+ver la formula de libay
+
+eL RO tiene un factorial de decimal y import scipy.special gamma()
+
+anuncio de diario o revista es o aditivo entre asmbos no pueden haber mas de 2800
+
+3500 en diario 
+
+
+matriz x variables de desicion 
+
+yo ecojo la cantidad de halcon 
+en mi paper hay aprox 30 pero se usan 10 [corroborar]
+
+

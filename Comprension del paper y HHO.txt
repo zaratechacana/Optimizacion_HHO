@@ -1,0 +1,386 @@
+********************************************************************************************
+Fase de exploracion 
+____________________________________________________________________________________________
+Ecuacion de la posicion del Halcon
+
+[1]	X(t+1) = {X_randt()- r_1 |X_rand(t) -2r_2 X(t)|		q >= 0.5 
+	 	 {(X_rabbit(t) -X_m(t)) -r_3 (LB+ r_4 (UB-LB))	q <= 0.5
+
+Desglose
+	X(t+1) 	      =	Posicion del vector Halcon en la proxima iteracion t
+	X_rabbit(t)   =	posicion del conejo
+	X(t) 	      =	es la actual posicion del vector del Halcon
+	r_1 	      =	numero random entre (0,1) que se actualiza en cada iteracion
+	r_2 	      =	numero random entre (0,1) que se actualiza en cada iteracion
+	r_3 	      =	numero random entre (0,1) que se actualiza en cada iteracion
+	r_4 	      =	numero random entre (0,1) que se actualiza en cada iteracion
+	q 	      =	numero random entre (0,1) que se actualiza en cada iteracion
+	LB 	      = limite inferior de las variables
+	UB	      = limite superior de las variables
+	X_rand(t)     = es un Halcon selecionado randomizadamente de la poblacion
+	X_m es        =	es la posición promedio de la población actual de halcones
+
+La parte de q >= 0.5 
+	es la regla que genera soluciones basada en lugares randomizados y otro Halcon
+La parde de q <= 0.5
+	diferencia entre las ubicaciones de la ubicacion del mejor y el promedio del grupo
+	mas un componente escalado aleatoriamente basado en el rango de variables
+
+r_n muestra la variabilidad de la naturaleza
+
+____________________________________________________________________________________________
+Ecuacion  de la posicion promedio de los Halcones
+
+[2]	X_m(t) = 1/n*Sum N i=1 (X_i(t))
+
+Desglose
+	X_i(t) 	      =	indica la ubicacion de cada Halcon en la iteracion t
+	N 	      =	total de Halcones en la poblacion
+
+____________________________________________________________________________________________
+********************************************************************************************
+Fase de transicion desde exploracion a explotacion
+____________________________________________________________________________________________
+
+La energia del conejo dirante la fase de explotacion varia  con la siguiente ecuacion
+
+Ecuacion Energia del Conejo
+
+[3]	E = 2*E_0(1-t/T)
+
+Desglose
+	E 	      =	Indica la energia de escape de la presa
+	T	      =	Es el numero maximo de iteraciones
+	E_0	      =	Es el estado incial de su energia, este puede, cambiar 
+			randomicamente entre el intervalo de (-1, 1) en cada iteracion
+				Si E_0 esta entre (-1, 0) El conejo esta debil fisicamente
+				Si E_0 esta entre (0, 1) El conejo se esta fortaleciendo
+			Durante cada iteracion E tiene a decrecer
+
+			Cuando |E| < 1 los Halcones buscan (Exploracion)
+			Cuando |E| >= 1 los Halcones entran en ataque (Explotacion)
+
+	Si r <  0.5 El conejo escapa existosamente
+	Si r >= 0.5 El conejo no escapa exitosamente
+
+	Si |E| >= 0.5 El Halcon realiza un asedio Suave
+	Si |E| <  0.5 El Halcon realiza un asedio Duro
+
+____________________________________________________________________________________________
+Asedio Suave
+
+Cuando r >= 0.5 El conejo baja probabilidad de escape
+y |E|>= 0.5 el Halcon realiza un asedio suave
+
+[4]	X(t+1) = ΔX(t) - E | JX_rabbit(t) -X(t)|
+
+[5]	ΔX(t) = X_rabbit(t) -X(t)
+
+J = 2(1 - r_5)
+
+Desglose
+	ΔX(t) 	Es la diferencia entre el vector de posicion del conejo y la ubicacion actual
+	      	en la iteracion t
+	r_5 	es un numero random entre (0, 1)
+	J	Representa la fuerza de salto aleatorio del conejo durante el procedimento
+		de escape. J cambia aleatoriamente en cada iteracion para simular naturaleza
+
+____________________________________________________________________________________________
+Asedio Duro
+
+Cuando r >= 0.5 El conejo baja probabilidad de escape
+y |E| < 0.5 El Halcon realiza un asedio duro
+
+[6]	X(t+1) = X_rabbit(t) - E |ΔX(t)|
+
+____________________________________________________________________________________________
+Asedio suave con inmersiones rapidas progresivas
+
+Cuando r < 0.5 El conejo con alta probabilidad de escape
+y |E|>= 0.5 el Halcon realiza un asedio suave
+
+Usamos el concepto de vuelo de levy (LF) para imitar el moviento en zigzag reales de las 
+presas durante la fase de escape y los buceos irregulares
+y al ser suave se supuso que el halcon realizara una "Decision" de su proximo movimento
+basado en la siguiente regla
+
+[7]	Y = X_rabbit(t) - E | JX_rabbit(t) - X(t)| 
+
+Luego de detectar si el buceo anterior es un buen buceo o no
+Si no es razonable (la preza esta realizando movimientos mas engañosos)
+tambien se comenzara a realizar buceso mas irregulares abruptos y rapidos al acercarse al
+conejo,. suponiendo que se sumergiran con el patron de LF se utiliza la siguiente regla
+
+[8]	Z = Y + S * LF(D)
+
+Desglose
+	D 	es la dimencion del problema 
+	S 	es un vector aleatorio de tamaño 1*D
+	LF 	funcion de Levy que se calcula en...
+
+[9]	LF(x) = 0.01 * (u * sigma) / |v|^(1/beta) where sigma = ( (Gamma(1 + beta) * sin(pi * beta / 2)) / (Gamma((1 + beta) / 2) * beta * 2^((beta - 1) / 2)) )^(1/beta)
+
+
+Desglose 
+	u	valores randomicos entre (0, 1)
+	v	valores randomicos entre (0, 1)
+	β	Constante establecida en (1.5)
+
+
+Por lo tanto la estrategia final para actualizar las posiciones de los halcones en la 
+fase de asedio suave es 
+
+[10]	X(t+1) = {Y if F(Y) < F(X(t))
+         	 {Z if F(Z) < F(X(t))  
+
+Desglose 
+	Y  = Y = X_rabbit(t) - E | JX_rabbit(t) - X(t)| 
+	Z = Y + S * LF(D)
+
+____________________________________________________________________________________________
+Asedio duro con inmersiones rapidas progresivas
+
+Cuando r < 0.5 El conejo con alta probabilidad de escape
+y |E| < 0.5 el Halcon realiza un asedio duro
+
+
+Regla de asedio duro 
+
+[11]	X(t+1) = {Y if F(Y) < F(X(t))
+         	 {Z if F(Z) < F(X(t))  
+
+Desglose 
+
+	Y  = [12]
+	Z = [13]
+	X_m(t) = 1/n*Sum N i=1 (X_i(t))
+
+
+[12]	Y = X_rabbit(t) - E | JX_rabbit(t) - X_m(t)| 
+	
+Desglose
+	X_m(t) = 1/n*Sum N i=1 (X_i(t))
+
+[13]	Y + S * LF(D)
+
+____________________________________________________________________________________________
+Algoritmo del HHO
+
+Inputs: The population sizeNand maximum number ofiterationsT
+Outputs: The location of rabbit and its fitness valueInitialize the random populationXi(i=1,2,...,N)
+while(stopping condition is not met)do
+	Calculate the fitness values of hawks
+	Set X_rabbit as the location of rabbit (best location)
+	for(each hawk (X_i))do
+		Update the initial energy E_0 and jump strength J ▷ E_0=2rand()-1, J=2(1-rand())
+		Update the E using E = 2*E_0(1-t/T)
+		if(|E|≥1)then	▷Exploration phaseUpdate the location vector using X(t+1) = {X_randt()- r_1 |X_rand(t) -2r_2 X(t)|		q >= 0.5 
+	 	 																			 {(X_rabbit(t) -X_m(t)) -r_3 (LB+ r_4 (UB-LB))	q <= 0.5
+		if(|E|<1)then▷Exploitation phase
+			if(r≥0.5 and|E|≥0.5 )then▷Soft besiege
+				Update the location vector using X(t+1) = ΔX(t) - E | JX_rabbit(t) -X(t)|
+			else if(r≥0.5 and|E|<0.5 )then	▷Hard besiege	
+				Update the location vector using X(t+1) = X_rabbit(t) - E |ΔX(t)|
+			else if(r<0.5 and|E|≥0.5 )then	▷Soft besiege with progressive rapid dives
+				Update the location vector using [10]	X(t+1) = {Y if F(Y) < F(X(t))
+         	 													 {Z if F(Z) < F(X(t))  
+			else if(r<0.5 and|E|<0.5 )then	▷Hard besiegewith progressive rapid dives
+				Update the location vector using [11]	X(t+1) = {Y if F(Y) < F(X(t))
+         	 													 {Z if F(Z) < F(X(t))  
+Return X_rabbit
+
+____________________________________________________________________________________________
+
+Algoritmo 1: Pseudocódigo del algoritmo HHO
+Entradas:
+  - Tamaño de la población N
+  - Número máximo de iteraciones T
+Salidas:
+  - Ubicación del conejo y su valor de aptitud
+
+Proceso:
+1. Inicializar la población aleatoria Xi(i = 1, 2, ..., N)
+
+2. Mientras no se cumpla la condición de parada:
+   a. Calcular los valores de aptitud de los halcones
+   b. Establecer X_rabbit como la ubicación del conejo (mejor ubicación encontrada)
+   
+   c. Para cada halcón (X_i):
+      i. Actualizar la energía inicial E_0 y la fuerza de salto J:
+         - E_0 = 2 * rand() - 1
+         - J = 2 * (1 - rand())
+      ii. Actualizar la energía E usando la Ecuación (3):
+         - E = 2 * E_0 * (1 - t/T)
+
+      iii. Si |E| ≥ 1 (Fase de Exploración):
+         - Si q ≥ 0.5:
+           X(t+1) = X_rand(t) - r_1 * |X_rand(t) - 2 * r_2 * X(t)|
+         - Si q < 0.5:
+           X(t+1) = (X_rabbit(t) - X_m(t)) - r_3 * (LB + r_4 * (UB - LB))
+      
+      iv. Si |E| < 1 (Fase de Explotación):
+         - Si r ≥ 0.5:
+           - Si |E| ≥ 0.5 (Asedio Suave):
+             ΔX(t) = X_rabbit(t) - X(t)
+             X(t+1) = ΔX(t) - E * |J * X_rabbit(t) - X(t)|
+           - Si |E| < 0.5 (Asedio Duro):
+             ΔX(t) = X_rabbit(t) - X(t)
+             X(t+1) = X_rabbit(t) - E * |ΔX(t)|
+         - Si r < 0.5:
+           - Si |E| ≥ 0.5 (Asedio Suave con inmersiones rápidas progresivas):
+             Y = X_rabbit(t) - E * |J * X_rabbit(t) - X(t)|
+             Z = Y + S * LF(D)
+             X(t+1) = {Y si F(Y) < F(X(t)), Z si F(Z) < F(X(t))}
+           - Si |E| < 0.5 (Asedio Duro con inmersiones rápidas progresivas):
+             Y = X_rabbit(t) - E * |J * X_rabbit(t) - X_m(t)|
+             Z = Y + S * LF(D)
+             X(t+1) = {Y si F(Y) < F(X(t)), Z si F(Z) < F(X(t))}
+
+3. Devolver X_rabbit
+
+____________________________________________________________________________________________
+
+
+Complejidad computacional
+
+Note que la complejidad computacional del HHO depende principalmente de tres procesos: 
+inicialización, evaluación de la aptitud y actualización de los halcones. 
+Note que con N halcones, la complejidad computacional del proceso de inicialización es O(N).
+ La complejidad computacional del mecanismo de actualización es O(T×N) + O(T×N×D), 
+que se compone de la búsqueda de la mejor ubicación y la actualización del 
+vector de ubicación de todos los halcones, donde T es el número máximo de iteraciones 
+y D es la dimensión de problemas específicos. Por lo tanto, la complejidad computacional
+ de HHO es O(N×(T+TD+1)).
+
+____________________________________________________________________________________________
+Funcion Objetiva Normal
+
+Max Z_1 = 65x_1 + 90x_2 + 40x_3 + 60x_4 + 20x_5
+
+Min Z_2 = 160x_1 + 300x_2 + 40x_3 + 100x_4 + 10x_5
+
+x_1 <= 15
+x_2 <= 10
+x_3 <= 25
+x_4 <= 4
+x_5 <= 30
+
+160x_1 + 300x_2 <= 3800 (Televisión)
+40x_3 + 100x_4 <= 2800 (Diarios y Revistas)
+40x_3 + 10x_5 <= 3500 (Diario y Radio)
+
+x_1, x_2, x_3, x_4, x_5 >= 0
+
+____________________________________________________________________________________________
+
+Funcion Objetiva scalarized
+
+Maximizar Z = w_q * ((65x_1 + 90x_2 + 40x_3 + 60x_4 + 30x_5)/3175) + w_p * ((c_hat - (160x_1 + 300x_2 + 40x_2 + 100x_4 + 10x_5)) / (c_hat - 0))
+
+x_1 <= 15
+x_2 <= 10
+x_3 <= 25
+x_4 <= 4
+x_5 <= 30
+
+160x_1 + 300x_2 <= 3800 (Televisión)
+40x_3 + 100x_4 <= 2800 (Diarios y Revistas)
+40x_3 + 10x_5 <= 3500 (Diario y Radio)
+
+x_1, x_2, x_3, x_4, x_5 >= 0
+
+,
+c_hat = 6000
+w_p = 0.7 # Peso para el costo
+w_q = 0.3 # Peso para la calidad
+
+___________________________________[DEPRECATED]_________________________________________________________
+
+E-constraint
+
+Max = q_1 * x_1 + q_2 * x_2 + q_3 * x_3 + q_4 * x_4 + q_5 * x_5
+Sujeto a:
+
+c_1 * x_1 + c_2 * x_2 + c_3 * x_3 + c_4 * x_4 + c_5 * x_5 <= e
+x_1 <= 15
+x_2 <= 10
+x_3 <= 25
+x_4 <= 4
+x_5 <= 30
+c_1 * x_1 + c_2 * x_2 <= 3800
+c_3 * x_3 + c_4 * x_4 <= 2800
+c_3 * x_3 + c_5 * x_5 <= 3500
+65 <= q_1 <= 85
+90 <= q_2 <= 95
+40 <= q_3 <= 60
+60 <= q_4 <= 80
+20 <= q_5 <= 30
+160 <= c_1 <= 200
+300 <= c_2 <= 350
+40 <= c_3 <= 80
+100 <= c_4 <= 120
+10 <= c_5 <= 20
+
+
+
+____________________________________________________________________________________________
+
+w_p = 0.5 # Peso para el costo
+w_q = 0.5 # Peso para la calidad
+[12.66854454  5.90781831 24.98080054  3.99962657 23.12089644]
+[10.53729765  7.04667784 22.09352825  3.99938681 25.4921842 ]
+[ 6.7765671   9.05139991 24.80058635  3.98184739 29.99724081]
+[ 5.8623543   9.535198   22.35176933  3.93714489 29.90031311]
+
+w_p = 0.25 # Peso para el costo
+w_q = 0.75 # Peso para la calidad
+[ 9.81483228  7.43179048 21.61662777  3.99998785 29.99941731]
+[14.26512007  5.05336546 24.99999335  3.99828768 29.65988702]
+[ 7.9580266   8.42238581 19.4766216   3.98031578 29.9977009 ]
+[ 5.14126786  9.92465714 24.99722027  3.99305856 24.91156204]
+
+w_p = 0 # Peso para el costo
+w_q = 1 # Peso para la calidad
+[ 9.75365898  7.46393729 16.74326834  3.95970572 29.98208505]
+[13.24870633  5.58816411 22.38758962  3.5481455  25.76871255]
+[14.66871076  4.84122489 16.81647338  3.99741576 29.98269198]
+[10.82892028  6.89124181 20.79240701  3.99546123 21.70651678]
+
+w_p = 0.75 # Peso para el costo
+w_q = 0.25 # Peso para la calidad
+[12.28518015  6.11378096 16.06627525  3.99728617 28.93657539]
+[11.0102906   6.79447239 21.23499134  3.45547055 21.23496708]
+[ 9.44975311  7.62679032 24.99617331  3.86396462 23.4846493 ]
+[12.31219981  6.09968196 24.90633115  3.99909942 29.89094418]
+
+w_p = 1 # Peso para el costo
+w_q = 0 # Peso para la calidad
+[10.26570649  7.18907366 17.91015384  3.99944832 21.75203749]
+[13.40094123  5.51949801 24.83763203  3.98864138 29.76847765]
+[ 8.33605602  8.22076877 24.93477637  3.97568228 25.49686298]
+[10.79456949  6.90956294 19.65688955  3.99904131 21.10063423]
+
+
+
+____________________________________________________________________________________________
+sigmodes x_n
+
+dominio x_1 = [0,15]
+1/(1+e^(-0.6(x-7.5)))
+
+dominio x_2 = [0,10]
+1/(1+e^(-1(x-5)))
+
+dominio x_3 = [0,25]
+1/(1+e^(-0.35(x-12.5)))
+
+dominio x_4 = [0,4]
+1/(1+e^(-2.5(x-2)))
+
+dominio x_5 = [0,30]
+1/(1+e^(-0.3(x-15)))
+
+
+
+
+

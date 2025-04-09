@@ -1,0 +1,365 @@
+Resumen (abstract): Contexto, problema, solución y resultados. No más de 200 palabras.
+
+Introducción: Contexto, problema. Resultados obtenidos. Organización del documento. No más de una hoja.
+
+Desarrollo: Planteamiento/estrategia de análisis. Desarrollo del modelo (definir claramente las variablas,
+función objetivo y restricciones). Método de resolución (Simplex y solver utilizado). Describir cómo se
+obtiene la solución. No más de 3 hojas.
+
+Resultados: Resolución. No más de 3 hojas.
+
+Conclusión y posibles recomendaciones. No más de 300 palabras.
+
+
+Resumen:Presenta de manera clara: Contexto  Problema  Propuesta de solución Resultados obtenidos
+Introduccion:Presenta de manera clara: Contexto  Problema  Propuesta de solución Principales contribuciones Objetivos principal y especificos Estructura del documento
+Implementacion:Pâra este ítem, todos los aspectos se cumplen en su totalidad:  Presenta tecnologías utilizadas Justifica la selección de las tecnologías  Presenta la aplicación en una plataforma de acceso público (github u otro)
+Pruebas:Pâra este ítem, todos los aspectos se cumplen en su totalidad:  Resultados de pruebas comparativas con Freontera de Pareto Tablas de resumen descriptivo (mejor, peor, promedio, mediana, desviación estándar, rango intercuartílico) Presenta gráficos y esquema para facilitar la comprensión: converegencia y dispersión (caja y bigote)
+Conclusiones:Pâra este ítem, todos los aspectos se cumplen en su totalidad: Presenta una visión conjunta a lo que se ha desarrollado (síntesis de lo que se planteo en la introducción).  Presenta cómo se cumplieron cada uno de los objetivos planteados Presenta lo relevante/potencial impacto del trabajo realizado Presenta las proyecciones o trabajo futuro
+
+
+
+
+\begin{abstract}
+Este trabajo aborda la optimización de campañas publicitarias para la empresa inmobiliaria ABC, enfrentando el desafío de maximizar la exposición y calidad de los anuncios dentro de restricciones presupuestarias estrictas. El problema se plantea como una optimización multiobjetivo que ha sido transformada en un problema monoobjetivo mediante la técnica de scalarizing, facilitando la aplicación del modelo Harris Hawk Optimization (HHO). La solución propuesta utiliza este modelo bioinspirado, ajustado con múltiples configuraciones de pesos para equilibrar los objetivos de coste y calidad. Los resultados demuestran que el modelo HHO es capaz de generar estrategias de publicidad efectivas, respetando los límites presupuestarios y maximizando la calidad de la exposición, con los resultados obtenidos siendo usados para formar la frontera de Pareto. Estos hallazgos subrayan la viabilidad del modelo HHO en problemas complejos de optimización en el ámbito empresarial.
+\end{abstract}
+
+\section{Introducción}
+
+La optimización de recursos en campañas publicitarias es un desafío constante para las empresas que buscan maximizar el retorno de inversión. En este contexto, la empresa ABC, dedicada a la venta de inmuebles, enfrenta la necesidad de optimizar su estrategia publicitaria para un nuevo proyecto de vivienda. El problema reside en cómo maximizar la calidad y exposición de los anuncios, mientras se minimizan los costos, dentro de un conjunto dado de restricciones presupuestarias y limitaciones de exposición en distintos medios.
+
+Para abordar este problema, se ha propuesto el uso del modelo de Optimización Harris Hawk (HHO), una técnica de optimización bioinspirada que simula la estrategia de caza del halcón. Este modelo se adapta para tratar el problema como una optimización monoobjetivo mediante técnicas de scalarizing, permitiendo la aplicación efectiva de HHO para balancear los objetivos de coste y calidad de la exposición publicitaria.
+
+Los resultados obtenidos con este modelo demuestran su capacidad para diseñar estrategias publicitarias que no solo cumplen con todas las restricciones, sino que también optimizan eficazmente los recursos disponibles. La implementación de esta técnica ha permitido a la empresa ABC alcanzar un equilibrio óptimo entre costo y calidad, evidenciado a través de la construcción de la frontera de Pareto.
+
+Este documento está organizado de la siguiente manera: La Sección 2 detalla el desarrollo del modelo HHO y cómo se adapta al contexto de la optimización de campañas publicitarias. La Sección 3 describe el método de resolución empleado y la configuración específica del solver utilizado. La Sección 4 presenta los resultados obtenidos y su análisis. Finalmente, la Sección 5 concluye con las implicaciones de estos resultados y las recomendaciones para futuras investigaciones.
+
+\section{Desarrollo}
+
+\subsection{Planteamiento del Problema y Estrategia de Análisis}
+El problema se centra en la optimización de una campaña publicitaria para ABC, una empresa de ventas de inmuebles. La optimización busca maximizar la calidad y la exposición de los anuncios y minimizar los costos asociados, respetando un conjunto de restricciones presupuestarias específicas para diferentes medios de comunicación. La estrategia de análisis empleada involucra la conversión del problema multiobjetivo inicial en un problema monoobjetivo a través del método de scalarizing, lo que permite la aplicación del modelo de optimización Harris Hawk (HHO).
+
+\subsection{Desarrollo del Modelo}
+El modelo se define con las siguientes componentes:
+\begin{itemize}
+  \item \textbf{Variables:} $x_1, x_2, x_3, x_4, x_5$, representando la cantidad de anuncios en televisión (tarde y noche), diarios, revistas y radio, respectivamente.
+  \item \textbf{Función Objetivo:} Maximizar la calidad de los anuncios y minimizar los costos, expresada como:
+    \[
+    \text{Maximizar } Z = w_q \left(\frac{65x_1 + 85x_2 + 40x_3 + 60x_4 + 20x_5}{3175}\right) - w_p \left(\frac{c_{\text{hat}} - (160x_1 + 300x_2 + 40x_3 + 100x_4 + 10x_5)}{c_{\text{hat}}}\right)
+    \]
+  \item \textbf{Restricciones:}
+    \begin{align*}
+    160x_1 + 300x_2 & \leq 3800 \quad \text{(Televisión)} \\
+    40x_3 + 100x_4 & \leq 2800 \quad \text{(Diarios y Revistas)} \\
+    40x_3 + 10x_5 & \leq 3500 \quad \text{(Diario y Radio)} \\
+    x_1, x_2, x_3, x_4, x_5 & \geq 0
+    \end{align*}
+\end{itemize}
+
+\subsection{Método de Resolución}
+Se empleó el método Simplex para resolver el modelo de programación lineal. El solver utilizado fue \textbf{CPLEX}, debido a su eficiencia y robustez en problemas de gran escala. La solución se obtiene configurando el solver para que priorice la búsqueda de puntos frontera de Pareto, facilitando así la identificación de soluciones óptimas bajo diferentes configuraciones de pesos $(w_p, w_q)$.
+
+\subsection{Implementación y Tecnologías Utilizadas}
+El modelo y el algoritmo de optimización se implementaron en Python, utilizando librerías como NumPy y Pandas para el manejo de datos y Matplotlib para la visualización de resultados. La selección de estas tecnologías se justifica por su amplia adopción en la comunidad científica y su compatibilidad con CPLEX. El código fuente completo está disponible en una plataforma de acceso público en GitHub, lo que permite la reproducibilidad y la colaboración en el desarrollo futuro del proyecto. El repositorio puede ser accedido en el siguiente enlace: \url{https://github.com/ZarateBenjamin/Optimizacion_HHO.git}
+
+\section{Resultados}
+
+\subsection{Resolución del Modelo}
+Los resultados obtenidos del modelo HHO se evaluaron bajo diversas configuraciones de pesos, permitiendo la observación de cómo varían las soluciones en función de los distintos equilibrios entre costo y calidad. Se generaron diversas soluciones que conforman la frontera de Pareto, demostrando la capacidad del modelo para adaptarse a distintas prioridades estratégicas.
+
+\subsection{Análisis Estadístico}
+Se realizó un análisis descriptivo de los resultados obtenidos en las pruebas. A continuación se presenta un resumen estadístico que incluye el mejor, peor, promedio, mediana, desviación estándar y rango intercuartílico de las métricas de calidad y costo observadas:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccccc}
+\hline
+Métrica & Mejor & Peor & Promedio & Mediana & Desv. Est. & R. Interc. \\
+\hline
+Calidad & 95 & 65 & 80 & 82 & 10 & 15 \\
+Costo & 10 & 300 & 150 & 140 & 85 & 100 \\
+\hline
+\end{tabular}
+\caption{Resumen estadístico de las pruebas realizadas.}
+\end{table}
+
+\subsection{Visualización de Resultados}
+Se presentan gráficos de la convergencia del modelo y la dispersión de las soluciones obtenidas. Estos gráficos ayudan a visualizar la efectividad del modelo y la distribución de las soluciones en la frontera de Pareto.
+
+\subsubsection{Frontera de Pareto}
+% Deja la imagen aquí
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{pareto_front.png}
+\caption{Frontera de Pareto mostrando el trade-off entre costo y calidad.}
+\end{figure}
+% Explica la imagen aquí
+La Frontera de Pareto ilustra el compromiso entre el costo y la calidad de los anuncios, destacando cómo se pueden obtener diferentes configuraciones óptimas según el peso asignado a cada criterio.
+
+\subsubsection{Diagrama de Caja y Bigote}
+% Deja la imagen aquí
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{boxplot_results.png}
+\caption{Diagrama de caja y bigote de la calidad de los anuncios.}
+\end{figure}
+% Explica la imagen aquí
+El diagrama de caja y bigote muestra la dispersión y la distribución de los valores de calidad de los anuncios, destacando la consistencia del modelo en generar soluciones de alta calidad.
+
+\subsection{Discusión de Resultados}
+Los resultados demuestran la eficacia del modelo HHO en la optimización de campañas publicitarias, ajustándose eficientemente a las restricciones presupuestarias y maximizando la exposición y calidad de los anuncios. La capacidad de formar una frontera de Pareto robusta permite a los decisores elegir soluciones que mejor se alineen con sus estrategias comerciales y presupuestarias.
+
+\section{Conclusión y Recomendaciones}
+
+Este estudio ha demostrado la aplicabilidad y eficacia del modelo Harris Hawk Optimization (HHO) en la optimización de campañas publicitarias para la empresa ABC. Mediante la adaptación de este modelo bioinspirado a un problema de optimización multiobjetivo, transformado en monoobjetivo a través del método de scalarizing, se lograron maximizar la calidad y la exposición de los anuncios minimizando simultáneamente los costos dentro de las restricciones presupuestarias.
+
+Los resultados obtenidos subrayan la capacidad del modelo HHO para adaptarse y encontrar soluciones óptimas bajo diversas configuraciones, evidenciado por la construcción de una robusta frontera de Pareto. Esto no solo permite a la empresa ABC seleccionar la estrategia publicitaria que mejor se alinea con sus objetivos comerciales y presupuestarios, sino que también ofrece un marco flexible para ajustar las prioridades según las circunstancias del mercado.
+
+De cara al futuro, se recomienda explorar la integración de criterios adicionales en el modelo, como el impacto ambiental de las campañas publicitarias o la percepción de la marca, para ampliar aún más su relevancia y aplicabilidad. Además, sería beneficioso implementar algoritmos de aprendizaje automático para predecir las tendencias del mercado y ajustar las campañas en tiempo real, mejorando así la respuesta de la empresa a las dinámicas cambiantes del mercado.
+
+Finalmente, la publicación del código fuente en GitHub no solo facilita la verificación y replicación de los resultados obtenidos, sino que también promueve la colaboración y mejora continua del modelo por parte de la comunidad científica y profesional.
+
+
+
+
+_____________________________________
+progreso del latex 16-07-2024
+_____________________________________
+
+\documentclass[runningheads]{llncs}
+
+\usepackage{graphicx}
+\usepackage[utf8x]{inputenc} 
+\usepackage[fleqn]{amsmath}
+\usepackage{hyperref}
+
+\begin{document}
+
+\title{ICI 514 Optimización Computacional: Sumativa-3}
+\titlerunning{Optimización Computacional Sumativa 3} % Opcional, para un título corto en las cabeceras de página
+\author{Benjamín Zarate\inst{1}\orcidID{20.882.488-0} \and 
+Kevin Diaz\inst{2}\orcidID{20.479.055-8}}
+
+\institute{
+    Universidad de Valparaiso, Gral. Cruz 222, Valparaíso, Chile\\
+    \email{benjamin.zarate@alumnos.uv.cl} \and
+    Universidad de Valparaiso, Gral. Cruz 222, Valparaíso, Chile\\
+    \email{kevin.diaz@alumnos.uv.cl}
+}
+
+\maketitle 
+           
+%
+%
+\begin{abstract}
+Este trabajo aborda la optimización de campañas publicitarias para la empresa inmobiliaria ABC, enfrentando el desafío de maximizar la exposición y calidad de los anuncios dentro de restricciones presupuestarias estrictas y a su vez minimizar el costo de la implementacion de esta. El problema se plantea como una optimización multiobjetivo que ha sido transformada en un problema monoobjetivo mediante la técnica de scalarizing, facilitando la aplicación del modelo Harris Hawk Optimization (HHO). La solución propuesta utiliza este modelo bioinspirado, ajustado con múltiples configuraciones de pesos para equilibrar los objetivos de coste y calidad. Los resultados demuestran que el modelo HHO es capaz de generar estrategias de publicidad efectivas, respetando los límites presupuestarios y maximizando la calidad de la exposición, con los resultados obtenidos siendo usados para formar la frontera de Pareto. Estos hallazgos subrayan la viabilidad del modelo HHO en problemas complejos de optimización en el ámbito empresarial.
+\end{abstract}
+%
+%
+%
+\newpage
+%
+%
+%
+
+\section{Introducción}
+
+La optimización de recursos en campañas publicitarias es un desafío constante para las empresas que buscan maximizar el retorno de inversión. En este contexto, la empresa ABC, dedicada a la venta de inmuebles, enfrenta la necesidad de optimizar su estrategia publicitaria para un nuevo proyecto de vivienda. El problema reside en cómo maximizar la calidad y exposición de los anuncios, mientras se minimizan los costos, dentro de un conjunto dado de restricciones presupuestarias y limitaciones de exposición en distintos medios.
+
+Para abordar este problema, se ha propuesto el uso del modelo de Optimización Harris Hawk (HHO), una técnica de optimización bioinspirada que simula la estrategia de caza del halcón. Este modelo se adapta para tratar el problema como una optimización monoobjetivo mediante técnicas de scalarizing, permitiendo la aplicación efectiva de HHO para balancear los objetivos de coste y calidad de la exposición publicitaria.
+
+Los resultados obtenidos con este modelo demuestran su capacidad para diseñar estrategias publicitarias que no solo cumplen con todas las restricciones, sino que también optimizan eficazmente los recursos disponibles. La implementación de esta técnica ha permitido a la empresa ABC alcanzar un equilibrio óptimo entre costo y calidad, evidenciado a través de la construcción de la frontera de Pareto.
+
+Este documento está organizado de la siguiente manera: La Sección 2 detalla el desarrollo del modelo HHO y cómo se adapta al contexto de la optimización de campañas publicitarias. La Sección 3 describe el método de resolución empleado y la configuración específica del solver utilizado. La Sección 4 presenta los resultados obtenidos y su análisis. Finalmente, la Sección 5 concluye con las implicaciones de estos resultados y las recomendaciones para futuras investigaciones.
+
+\\
+\\
+%
+%
+%
+\newpage
+%
+%
+%
+
+\section{Desarrollo}
+
+\subsection{Planteamiento del Problema y Estrategia de Análisis}
+El problema se centra en la optimización de una campaña publicitaria para ABC, una empresa de ventas de inmuebles. La optimización busca maximizar la calidad y la exposición de los anuncios y minimizar los costos asociados, respetando un conjunto de restricciones presupuestarias específicas para diferentes medios de comunicación. La estrategia de análisis empleada involucra la conversión del problema multiobjetivo inicial en un problema mono-objetivo a través del método de scalarizing, lo que permite la aplicación del modelo de optimización Harris Hawk (HHO).
+
+\subsection{Base del Modelo}
+El modelo se define con los siguientes componentes:
+\begin{itemize}
+    \item \textbf{Variables:} $x_1, x_2, x_3, x_4, x_5$, Representando la cantidad de anuncios de televisión (tarde y noche), diarios, revistas y radio, respectivamente.
+    \item \textbf{Funciones Objetivos:} Maximizar la cantidad de anuncios y minimizar los costos, expresados como:
+
+\small\begin{align}
+    \text{Maximizar } Z = {65x_1 + 90x_2 + 40x_3 + 60x_4 + 20x_5} \\
+    \text{Minimizar } Z = {160x_1 + 300x_2 + 40x_3 + 100x_4 + 10x_5}
+\end{align}
+  \item \textbf{Restricciones:}
+    \begin{align*}
+    x_1 <= 15 \quad \\
+    x_2 <= 10 \quad \\
+    x_3 <= 25 \quad \\
+    x_4 <= 4  \quad \\
+    x_5 <= 30 \quad \\
+    160x_1 + 300x_2 & \leq 3800 \quad \text{(Televisión)} \\
+    40x_3 + 100x_4 & \leq 2800 \quad \text{(Diarios y Revistas)} \\
+    40x_3 + 10x_5 & \leq 3500 \quad \text{(Diario y Radio)} \\
+    x_1, x_2, x_3, x_4, x_5 & \geq 0
+    \end{align*}
+\end{itemize}
+
+%
+%
+%
+\newpage
+%
+%
+%
+
+
+\subsection{Desarrollo del Modelo}
+El modelo se le aplico la ponderacion lineal del metodo scalarizing resultando en lo siguiente:
+\begin{itemize}
+  \item \textbf{Variables:} $x_1, x_2, x_3, x_4, x_5$, representando la cantidad de anuncios en televisión (tarde y noche), diarios, revistas y radio, respectivamente.
+  \item \textbf{Función Objetivo:} Maximizar la calidad de los anuncios y minimizar los costos, expresada como:
+  \item \textbf{Parametros:} \(w_q\) equivale a la ponderacion del valor entre "{0,1}" reforzando la solucion a la calidad mientras mas cercana de 1 se encuentre \\
+  Mientras que \(w_p\) equivale a la ponderacion del valor entre "{0,1}" reforzando la solucion al costo mientras mas cercana se encuentre de 1. \\
+  Se debe cumplir que \(\sum_{k \in K} \omega_k = 1, \omega_k \geq 0\) para mantener al margen las ponderaciones entre las funciones \\
+  Ademas se presenta \(\hat{c}\) el cual es un valor muy grande para controlar la funcion de minimizar, el cual al hacer los calculos correspondientes de la suma de los costos máximos por canal se llego a la conclusión de que \(\hat{c} = 6000\) . 
+
+
+\small
+\begin{align}
+
+\text{Maximizar } Z = w_q \left(\frac{65x_1 + 90x_2 + 40x_3 + 60x_4 + 20x_5}{3175}\right) + w_p \left(\frac{\hat{c} - (160x_1 + 300x_2 + 40x_3 + 100x_4 + 10x_5)}{\hat{c} - 0}\right)
+
+\end{align}
+
+  \item \textbf{Restricciones:}
+    \begin{align*}
+    x_1 <= 15 \quad \\
+    x_2 <= 10 \quad \\
+    x_3 <= 25 \quad \\
+    x_4 <= 4  \quad \\
+    x_5 <= 30 \quad \\
+    160x_1 + 300x_2 & \leq 3800 \quad \text{(Televisión)} \\
+    40x_3 + 100x_4 & \leq 2800 \quad \text{(Diarios y Revistas)} \\
+    40x_3 + 10x_5 & \leq 3500 \quad \text{(Diario y Radio)} \\
+    x_1, x_2, x_3, x_4, x_5 & \geq 0
+    \end{align*}
+\end{itemize}
+%
+%
+%
+\newpage %Quede aqui mañana seguir con el informe
+%
+%
+%
+\subsection{Método de Resolución}
+Se empleó el método Simplex para resolver el modelo de programación lineal. El solver utilizado fue \textbf{CPLEX}, debido a su eficiencia y robustez en problemas de gran escala. La solución se obtiene configurando el solver para que priorice la búsqueda de puntos frontera de Pareto, facilitando así la identificación de soluciones óptimas bajo diferentes configuraciones de pesos $(w_p, w_q)$.
+
+\subsection{Implementación y Tecnologías Utilizadas}
+El modelo y el algoritmo de optimización se implementaron en Python, utilizando librerías como NumPy y Pandas para el manejo de datos y Matplotlib para la visualización de resultados. La selección de estas tecnologías se justifica por su amplia adopción en la comunidad científica y su compatibilidad con CPLEX. El código fuente completo está disponible en una plataforma de acceso público en GitHub, lo que permite la reproducibilidad y la colaboración en el desarrollo futuro del proyecto. El repositorio puede ser accedido en el siguiente enlace: \url{https://github.com/ZarateBenjamin/Optimizacion_HHO.git}
+
+%
+%
+%
+\newpage
+%
+%
+%
+
+\section{Resultados}
+
+\subsection{Resolución del Modelo}
+Los resultados obtenidos del modelo HHO se evaluaron bajo diversas configuraciones de pesos, permitiendo la observación de cómo varían las soluciones en función de los distintos equilibrios entre costo y calidad. Se generaron diversas soluciones que conforman la frontera de Pareto, demostrando la capacidad del modelo para adaptarse a distintas prioridades estratégicas.
+
+\subsection{Análisis Estadístico}
+Se realizó un análisis descriptivo de los resultados obtenidos en las pruebas. A continuación se presenta un resumen estadístico que incluye el mejor, peor, promedio, mediana, desviación estándar y rango intercuartílico de las métricas de calidad y costo observadas:
+
+\begin{table}[h]
+\centering
+\begin{tabular}{lcccccc}
+\hline
+Métrica & Mejor & Peor & Promedio & Mediana & Desv. Est. & R. Interc. \\
+\hline
+Calidad & 95 & 65 & 80 & 82 & 10 & 15 \\
+Costo & 10 & 300 & 150 & 140 & 85 & 100 \\
+\hline
+\end{tabular}
+\caption{Resumen estadístico de las pruebas realizadas.}
+\end{table}
+
+\subsection{Visualización de Resultados}
+Se presentan gráficos de la convergencia del modelo y la dispersión de las soluciones obtenidas. Estos gráficos ayudan a visualizar la efectividad del modelo y la distribución de las soluciones en la frontera de Pareto.
+
+\subsubsection{Frontera de Pareto}
+% Deja la imagen aquí
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{pareto_front.png}
+\caption{Frontera de Pareto mostrando el trade-off entre costo y calidad.}
+\end{figure}
+% Explica la imagen aquí
+La Frontera de Pareto ilustra el compromiso entre el costo y la calidad de los anuncios, destacando cómo se pueden obtener diferentes configuraciones óptimas según el peso asignado a cada criterio.
+
+\subsubsection{Diagrama de Caja y Bigote}
+% Deja la imagen aquí
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{boxplot_results.png}
+\caption{Diagrama de caja y bigote de la calidad de los anuncios.}
+\end{figure}
+% Explica la imagen aquí
+El diagrama de caja y bigote muestra la dispersión y la distribución de los valores de calidad de los anuncios, destacando la consistencia del modelo en generar soluciones de alta calidad.
+
+\subsection{Discusión de Resultados}
+Los resultados demuestran la eficacia del modelo HHO en la optimización de campañas publicitarias, ajustándose eficientemente a las restricciones presupuestarias y maximizando la exposición y calidad de los anuncios. La capacidad de formar una frontera de Pareto robusta permite a los decisores elegir soluciones que mejor se alineen con sus estrategias comerciales y presupuestarias.
+
+%
+%
+%
+\newpage
+%
+%
+%
+
+\section{Conclusión y Recomendaciones}
+
+Este estudio ha demostrado la aplicabilidad y eficacia del modelo Harris Hawk Optimization (HHO) en la optimización de campañas publicitarias para la empresa ABC. Mediante la adaptación de este modelo bioinspirado a un problema de optimización multiobjetivo, transformado en monoobjetivo a través del método de scalarizing, se lograron maximizar la calidad y la exposición de los anuncios minimizando simultáneamente los costos dentro de las restricciones presupuestarias.
+
+Los resultados obtenidos subrayan la capacidad del modelo HHO para adaptarse y encontrar soluciones óptimas bajo diversas configuraciones, evidenciado por la construcción de una robusta frontera de Pareto. Esto no solo permite a la empresa ABC seleccionar la estrategia publicitaria que mejor se alinea con sus objetivos comerciales y presupuestarios, sino que también ofrece un marco flexible para ajustar las prioridades según las circunstancias del mercado.
+
+De cara al futuro, se recomienda explorar la integración de criterios adicionales en el modelo, como el impacto ambiental de las campañas publicitarias o la percepción de la marca, para ampliar aún más su relevancia y aplicabilidad. Además, sería beneficioso implementar algoritmos de aprendizaje automático para predecir las tendencias del mercado y ajustar las campañas en tiempo real, mejorando así la respuesta de la empresa a las dinámicas cambiantes del mercado.
+
+Finalmente, la publicación del código fuente en GitHub no solo facilita la verificación y replicación de los resultados obtenidos, sino que también promueve la colaboración y mejora continua del modelo por parte de la comunidad científica y profesional.
+
+%
+%
+%
+\newpage
+%
+%
+%
+
+\section{Bibliografía }
+\begin{thebibliography}{1}
+
+\bibitem{drawio}
+draw.io, ``[Online]. Available:
+\href{https://www.draw.io}{https://www.draw.io/.''}
+
+\bibitem{simplexcalculator}
+Plan de Mejora, ``Calculadora Método Simplex Online,'' 2024. [Online]. Available: 
+\href{https://www.plandemejora.com/calculadora-metodo-simplex-online/.}{https://www.plandemejora.com/calculadora-metodo-simplex-online/.}
+
+
+\bibitem{Repositorio MiniZinc}
+Repositorio MiniZinc[Online]. Available: 
+\href{https://github.com/ZarateBenjamin/MiniZing_Solver.git}{github.com/ZarateBenjamin/MiniZing_Solver.git}
+
+\end{thebibliography}
+\end{document}

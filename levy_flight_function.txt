@@ -1,0 +1,2 @@
+
+LF(x) = 0.01 * (u * sigma) / |v|^(1/beta) where sigma = ( (Gamma(1 + beta) * sin(pi * beta / 2)) / (Gamma((1 + beta) / 2) * beta * 2^((beta - 1) / 2)) )^(1/beta)

@@ -1,0 +1,47 @@
+
+1. Ecuación del conejo:
+X(t+1) = 
+{ 
+    X_rand(t) - r_1 |X_rand(t) - 2r_2 X(t)|  si q >= 0.5 
+    (X_rabbit(t) - X_m(t)) - r_3 (LB + r_4 (UB - LB))  si q <= 0.5 
+}
+
+2. Ecuación de la posición promedio de los Halcones:
+X_m(t) = 1/N * sum(X_i(t) for i in range(1, N+1))
+
+3. Ecuación de Energía del Conejo:
+E = 2 * E_0 * (1 - t/T)
+
+4. Asedio Suave:
+X(t+1) = ΔX(t) - E | J X_rabbit(t) - X(t) |
+
+5. Diferencia de posición en Asedio Suave:
+ΔX(t) = X_rabbit(t) - X(t)
+
+6. Asedio Duro:
+X(t+1) = X_rabbit(t) - E | ΔX(t) |
+
+7. Ecuación de Y para Asedio Suave con Inmersiones Rápidas Progresivas:
+Y = X_rabbit(t) - E | J X_rabbit(t) - X(t) |
+
+8. Ecuación de Z para Asedio Suave con Inmersiones Rápidas Progresivas:
+Z = Y + S * LF(D)
+
+9. Función de Vuelo de Lévy (LF):
+LF(x) = 0.01 * (u * sigma) / |v|^(1/beta) 
+sigma = ( (Gamma(1 + beta) * sin(pi * beta / 2)) / (Gamma((1 + beta) / 2) * beta * 2^((beta - 1) / 2)) )^(1/beta)
+
+10. Estrategia Final para Asedio Suave:
+X(t+1) = {Y if F(Y) < F(X(t)), Z if F(Z) < F(X(t))}
+
+11. Regla de Asedio Duro:
+X(t+1) = {Y if F(Y) < F(X(t)), Z if F(Z) < F(X(t))}
+
+12. Ecuación de Y para Asedio Duro con Inmersiones Rápidas Progresivas:
+Y = X_rabbit(t) - E | J X_rabbit(t) - X_m(t) |
+
+13. Ecuación de Z para Asedio Duro con Inmersiones Rápidas Progresivas:
+Z = Y + S * LF(D)
+
+14. Función de posición promedio:
+X_m(t) = 1/N * sum(X_i(t) for i in range(1, N+1))

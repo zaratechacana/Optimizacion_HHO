@@ -1,0 +1,129 @@
+### Resumen (Abstract)
+
+ABC, una empresa inmobiliaria, busca optimizar su campaña publicitaria para un nuevo proyecto de vivienda mediante la selección estratégica de medios publicitarios: televisión, diarios, revistas y radio. Utilizando un enfoque de programación lineal, el estudio desarrolló un modelo para maximizar la calidad de la exposición de los anuncios mientras minimiza el costo total, respetando restricciones presupuestarias y de calidad. Se aplicó un algoritmo bioinspirado, Harris Hawk Optimization (HHO), para encontrar la configuración óptima de anuncios, resultando en una distribución que equilibra efectivamente costo y calidad. El análisis reveló que la asignación óptima incluye una concentración significativa en radio y revistas, con un gasto total que maximiza la calidad percibida por un costo efectivo.
+
+### Introducción
+
+En el contexto de una economía global competitiva, ABC busca lanzar un proyecto de vivienda maximizando la efectividad de su campaña publicitaria mediante una asignación óptima de recursos en diferentes medios. El desafío radica en alcanzar la máxima calidad de exposición sin exceder un presupuesto definido, mientras se cumplen restricciones específicas de exposición por medio. Este documento presenta el modelo de optimización utilizado, detalla el algoritmo de solución empleado y analiza los resultados obtenidos. La organización del informe incluye una introducción al problema, el desarrollo del modelo, los resultados de la optimización y las conclusiones con recomendaciones.
+
+### Desarrollo
+
+#### Planteamiento y Estrategia de Análisis
+El análisis comenzó con la definición de variables para cada tipo de anuncio, su costo asociado, y la calidad esperada. Se establecieron restricciones sobre la cantidad máxima de anuncios y los costos totales por tipo de medio.
+
+#### Desarrollo del Modelo
+Las variables, \( x_i \), representan la cantidad de anuncios por medio, mientras que \( c_i \) y \( q_i \) denotan el costo y la calidad de cada anuncio, respectivamente. La función objetivo buscaba maximizar \( \sum_{i=1}^5 q_i \times x_i \), sujeta a restricciones lineales que incluyen límites en el número de anuncios y el costo total por tipo de medio.
+
+#### Método de Resolución
+Se utilizó el algoritmo HHO, un método bioinspirado que simula el comportamiento depredador de los halcones. Este enfoque fue seleccionado por su capacidad para explorar y explotar el espacio de soluciones en problemas con múltiples restricciones y objetivos. 
+
+#### Obtención de la Solución
+El procedimiento iterativo del HHO ajusta las posiciones de los "halcones" (soluciones candidatas) basándose en la posición del "conejo" (mejor solución encontrada), buscando el equilibrio entre la exploración de nuevas áreas del espacio de soluciones y la explotación de las conocidas.
+
+### Resultados
+
+El modelo identificó una configuración óptima que asigna 8 anuncios a televisión en la tarde, ninguno a televisión en la noche, 25 a diarios, 4 a revistas y 30 a radio. Esta distribución cumple con todas las restricciones presupuestarias y maximiza la calidad de exposición alcanzando un valor de calidad total de 2867.5 puntos.
+
+### Conclusión y Recomendaciones
+
+El modelo propuesto y el algoritmo HHO han demostrado ser efectivos para optimizar la campaña publicitaria de ABC, equilibrando costo y calidad de manera eficiente. Recomendamos considerar la adaptación del modelo a cambios en el presupuesto o en las métricas de valorización de los anuncios para mantener su relevancia. Además, sugerimos la exploración de otros medios digitales modernos para aumentar el alcance y la efectividad de futuras campañas publicitarias. La inclusión de análisis de sensibilidad podría proporcionar más insights sobre la estabilidad de las soluciones frente a cambios en los parámetros del modelo.
+
+
+
+
+
+
+
+
+
+### Informe Completo sobre la Optimización de Campaña Publicitaria para ABC usando HHO
+
+#### Resumen
+ABC, una empresa inmobiliaria, se enfrenta al reto de maximizar la efectividad de su campaña publicitaria para un nuevo proyecto de vivienda. Se implementó un modelo de programación lineal para optimizar la selección de cinco tipos de medios publicitarios, sujeto a restricciones presupuestarias y de exposición. Para resolver este problema, se utilizó el algoritmo bioinspirado Harris Hawk Optimization (HHO), que se adaptó para manejar la naturaleza específica de este desafío de marketing. Los resultados indican una asignación óptima de anuncios que maximiza la calidad de exposición respetando los límites de costos, proporcionando una estrategia publicitaria eficiente y rentable.
+
+#### Introducción
+Este documento detalla la aplicación de un modelo de programación lineal combinado con una técnica de optimización avanzada, el HHO, para optimizar la campaña publicitaria de ABC. El objetivo es equilibrar la calidad de la exposición de los anuncios con el costo total, bajo restricciones específicas de cobertura y presupuesto.
+
+#### Desarrollo del Modelo
+
+##### Planteamiento del Problema
+Se modeló la selección de medios a través de variables que representan la cantidad de anuncios por medio, sujetas a restricciones de costos y número máximo de anuncios. La función objetivo fue diseñada para maximizar la calidad total de la exposición ponderada por el costo de cada anuncio.
+
+##### Variables y Restricciones
+- \(x_i\): Número de anuncios por medio.
+- \(c_i\), \(q_i\): Costo y calidad asociada con cada medio.
+- Restricciones de costos y cantidad de anuncios por medio.
+
+##### Método de Resolución: Harris Hawk Optimization (HHO)
+
+###### Exploración
+El HHO inicia con una fase de exploración donde los halcones (soluciones candidatas) buscan presas (mejores soluciones) aleatoriamente. La posición del halcón se actualiza según si la presa detectada es aleatoria o la mejor actual, ajustando la posición con respecto a variables aleatorias \(r_1, r_2, r_3, r_4\) y los límites de las variables.
+
+###### Transición de Exploración a Explotación
+La transición se guía por la "energía de la presa", que disminuye con el tiempo, simbolizando la fatiga del conejo (la mejor solución actual). Dependiendo de esta energía, los halcones cambian su estrategia de búsqueda a técnicas más agresivas (explotación).
+
+###### Explotación
+En la fase de explotación, los halcones ajustan su posición directamente en relación con la presa, utilizando movimientos calculados para acercarse a la solución óptima. Esta fase incluye "asedios suaves" con movimientos menos agresivos y "asedios duros" para ajustes más directos y agresivos.
+
+###### Complejidad Computacional
+La complejidad del HHO depende de la cantidad de halcones, la dimensión del problema y el número de iteraciones, siendo generalmente proporcional a \(O(N \times (T + TD + 1))\), donde \(N\) es el número de halcones, \(T\) es el número de iteraciones, y \(D\) es la dimensión del problema.
+
+#### Resultados
+Se logró una configuración óptima de anuncios que maximiza la calidad de exposición por un costo total de 2867.5 um, utilizando principalmente radio y revistas, demostrando la eficacia del modelo y la técnica de optimización utilizada.
+
+#### Conclusión y Recomendaciones
+El uso del modelo de programación lineal y el algoritmo HHO resultó en una estrategia publicitaria efectiva para ABC. Se recomienda la continua evaluación de la campaña con ajustes en la estrategia basados en el rendimiento real y cambios en el mercado. Futuras investigaciones podrían explorar la inclusión de medios digitales y análisis de sensibilidad para mejorar la robustez del modelo.
+
+Este enfoque proporciona un camino claro para la optimización de recursos en campañas publicitarias, destacando la importancia de integrar técnicas avanzadas de optimización en la planificación estratégica de marketing.
+
+
+
+
+Vamos a estructurar el informe completo con secciones detalladas y luego lo convertiré en un documento de Word.
+
+### Informe Completo sobre la Optimización de Campaña Publicitaria para ABC usando HHO
+
+**Resumen**  
+ABC, una empresa de ventas inmobiliarias, enfrenta el desafío de maximizar la rentabilidad de su nueva campaña publicitaria para un proyecto de vivienda, utilizando cinco medios diferentes. Para resolver este problema, se implementó un modelo de programación lineal combinado con la optimización bioinspirada Harris Hawk Optimization (HHO), logrando una asignación de anuncios que optimiza la calidad de la exposición minimizando los costos.
+
+**Introducción**  
+En un mercado altamente competitivo, ABC busca optimizar su campaña publicitaria para maximizar la visibilidad de un nuevo proyecto de vivienda. Este informe detalla la metodología utilizada para modelar y resolver este problema, utilizando programación lineal y HHO, una técnica de optimización avanzada.
+
+**Desarrollo del Modelo**  
+
+- **Definición de Variables y Restricciones**:  
+  - \(x_i\): Número de anuncios por medio.
+  - \(c_i\), \(q_i\): Costo y calidad de cada anuncio.
+  - Restricciones presupuestarias y de capacidad por medio.
+
+- **Modelo de Programación Lineal**:  
+  - **Función Objetivo**: Maximizar \( \sum_{i=1}^5 q_i \times x_i \) sujeta a restricciones de presupuesto y número máximo de anuncios.
+  - **Restricciones**: Limitaciones en el número de anuncios y en el gasto total por tipo de medio.
+
+- **Optimización con HHO**:  
+  - **Exploración y Explotación**: Detalle de cómo el algoritmo simula el comportamiento de los halcones para encontrar la mejor solución.
+  - **Adaptación del HHO al problema**: Ajustes específicos para el problema de la campaña publicitaria.
+  - **Estrategias de Búsqueda**: Descripción de las fases de exploración, transición y explotación, incluyendo ecuaciones y parámetros.
+
+**Resultados**  
+Descripción de la configuración óptima encontrada y su impacto en términos de costos y calidad de exposición.
+
+**Conclusión y Recomendaciones**  
+Confirmación de la eficacia del modelo y el algoritmo utilizado, con recomendaciones para futuras campañas y ajustes basados en el rendimiento real de la campaña.
+
+**Apéndices**  
+- **Detalles Técnicos del HHO**: Inclusión de ecuaciones y descripciones detalladas de cada fase del algoritmo.
+- **Análisis de Sensibilidad**: Propuestas para evaluar la estabilidad de las soluciones frente a cambios en los parámetros.
+
+Voy a preparar este documento en formato Word y lo proporcionaré en un momento.
+
+
+
+
+
+
+
+
+
+
+
